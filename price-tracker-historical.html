@@ -15,6 +15,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
         .chart-tooltip-change.positive {
             color: #00ff88;
         }
@@ -818,7 +820,7 @@
                 // Add initial data point if none exists
                 if (history.length === 0) {
                     addDataPoint(item.symbol, basePrice);
-                    console.log(`Started tracking ${item.name} at ${formatPrice(basePrice)}`);
+                    // Started tracking item
                 }
             });
 
@@ -1304,14 +1306,7 @@
                 `Historical data: ${dataAge} days • Storage: ${(JSON.stringify(historicalData).length / 1024).toFixed(1)}KB`;
         }
 
-        // Update all prices
-        function updateAllPrices() {
-            Object.values(categories).flat().forEach(updateItemPrice);
-            document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
-            updateStats();
-            saveData();
-            render();
-        }
+        // Update all prices (removed duplicate - enhanced version exists below)
 
         // Save data to localStorage
         function saveData() {
@@ -1681,7 +1676,7 @@
 
         // Start background updates
         function startBackgroundUpdates() {
-            console.log('Starting background updates...');
+            // Starting background updates
             
             // Continue updates even when page is hidden
             if (!backgroundUpdateInterval) {
@@ -1692,7 +1687,7 @@
                             updateItemPrice(item);
                         });
                         saveData();
-                        console.log('Background update completed at', new Date().toLocaleTimeString());
+                        // Background update completed
                     }
                 }, UPDATE_INTERVAL);
             }
@@ -1700,7 +1695,7 @@
 
         // Stop background updates
         function stopBackgroundUpdates() {
-            console.log('Stopping background updates...');
+            // Stopping background updates
             if (backgroundUpdateInterval) {
                 clearInterval(backgroundUpdateInterval);
                 backgroundUpdateInterval = null;
@@ -1720,10 +1715,7 @@
             
             saveData();
             
-            // Log update for debugging
-            if (!isPageVisible) {
-                console.log('Background data collection active:', new Date().toLocaleTimeString());
-            }
+            // Background data collection is active when page is not visible
         }
 
         // Prevent page unload if data is being collected
