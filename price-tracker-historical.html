@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track prices of everything with historical charts - Bitcoin, Gold, Rolex watches, Pokemon cards, and more!">
+    <meta name="keywords" content="price tracker, bitcoin, cryptocurrency, gold, rolex, stocks, commodities, historical charts">
+    <title>Universal Price Tracker - Long-Term Market Analysis</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📈</text></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        .chart-tooltip-change.positive {
+            color: #00ff88;
+        }
+
+        .chart-tooltip-change.negative {
+            color: #ff4d4d;
+        }
+
+        .background-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #00ff88;
+            margin-left: 15px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .background-indicator.inactive {
+            background: rgba(255, 77, 77, 0.1);
+            border-color: rgba(255, 77, 77, 0.3);
+            color: #ff4d4d;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: clamp(20px, 3vw, 40px);
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 120px;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00d4ff;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            pointer-events: none;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .btn.active {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0f0f1e;
+            border-color: transparent;
+        }
+
+        .update-info {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .update-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .data-info {
+            font-size: 0.85rem;
+            color: #00ff88;
+            margin-top: 5px;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .items-list {
+            display: none;
+        }
+
+        .items-list .item-card {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card.trending {
+            border-color: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .trending-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00ff88;
+            color: #0f0f1e;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .favorite-btn:hover {
+            color: #ff4d4d;
+            transform: scale(1.2);
+        }
+
+        .favorite-btn.active {
+            color: #ff4d4d;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-icon {
+            font-size: 1.5rem;
+        }
+
+        .item-symbol {
+            font-size: 0.8rem;
+            color: #888;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        .price-container {
+            margin-bottom: 15px;
+        }
+
+        .current-price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            gap: 5px;
+        }
+
+        .price-change.positive {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .price-change.negative {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+        }
+
+        .item-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat {
+            font-size: 0.85rem;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #ccc;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-period {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.75rem;
+        }
+
+        .period-btn {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .period-btn.active {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border-color: #00d4ff;
+        }
+
+        .chart-mini {
+            height: 60px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            stroke: #00d4ff;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .chart-fill {
+            fill: url(#gradient);
+            opacity: 0.1;
+        }
+
+        .chart-dot {
+            fill: #00d4ff;
+            stroke: #0f0f1e;
+            stroke-width: 2;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border: none;
+            color: #0f0f1e;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+            font-size: 1rem;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #1a1a2e;
+            margin: 50px auto;
+            padding: 40px;
+            max-width: 800px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .chart-large {
+            height: 300px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 10px;
+            margin: 30px 0;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .data-controls {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-btn {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .data-btn:hover {
+            background: rgba(255, 77, 77, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar {
+                gap: 10px;
+            }
+            
+            .stat-box {
+                padding: 15px;
+                min-width: 100px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-bar {
+                max-width: none;
+            }
+            
+            .view-toggle {
+                justify-content: center;
+            }
+            
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 20px auto;
+                padding: 20px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Universal Price Tracker</h1>
+            <p class="subtitle">Long-term market trends across all asset classes</p>
+            
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-box">
+                    <h3 id="totalItems">0</h3>
+                    <p>Items Tracked</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="gainers">0</h3>
+                    <p>Week Gainers</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="losers">0</h3>
+                    <p>Week Losers</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="dataPoints">0</h3>
+                    <p>Data Points</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search items..." id="searchInput">
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <div class="view-toggle">
+                    <button class="btn active" onclick="setView('grid')">Grid</button>
+                    <button class="btn" onclick="setView('list')">List</button>
+                    <button class="btn" onclick="showFavorites()">⭐ Favorites</button>
+                </div>
+            </div>
+
+            <div class="update-info">
+                <p class="update-time">
+                    Last updated: <span id="updateTime">--:--:--</span>
+                    <span class="background-indicator" id="bgIndicator">
+                        <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                        Background Collection Active
+                    </span>
+                </p>
+                <p class="data-info" id="dataInfo">Building long-term charts...</p>
+                <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">Updates every 5 minutes • Best viewed after 1+ week of data</p>
+            </div>
+        </header>
+
+        <div id="categoriesContainer"></div>
+
+        <button class="refresh-btn" onclick="manualRefresh()">🔄 Update Prices</button>
+
+        <div class="data-controls">
+            <p style="color: #666; margin-bottom: 10px;">Data Management (1 Year Retention)</p>
+            <button class="data-btn" onclick="exportData()">📥 Export Data</button>
+            <button class="data-btn" onclick="clearOldData()">🗑️ Clean Old Data</button>
+            <button class="data-btn" onclick="clearAllData()">⚠️ Clear All Data</button>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal" onclick="closeModalOnBg(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>💡 Historical data stored locally • Updates every 5 minutes • Data retained for 1 year</p>
+        <p>Charts show weekly/monthly trends • Perfect for long-term market analysis</p>
+    </footer>
+
+    <script>
+        // Complete data structure with all categories
+        const categories = {
+            'Precious Metals': [
+                { name: 'Gold', symbol: 'XAU', unit: '/oz', basePrice: 2050, icon: '🥇', volatility: 0.002 },
+                { name: 'Silver', symbol: 'XAG', unit: '/oz', basePrice: 24.50, icon: '🥈', volatility: 0.003 },
+                { name: 'Platinum', symbol: 'XPT', unit: '/oz', basePrice: 980, icon: '💎', volatility: 0.003 },
+                { name: 'Palladium', symbol: 'XPD', unit: '/oz', basePrice: 1450, icon: '⚪', volatility: 0.004 }
+            ],
+            'Cryptocurrencies': [
+                { name: 'Bitcoin', symbol: 'BTC', unit: '', basePrice: 45000, icon: '₿', volatility: 0.02 },
+                { name: 'Ethereum', symbol: 'ETH', unit: '', basePrice: 2500, icon: 'Ξ', volatility: 0.025 },
+                { name: 'Solana', symbol: 'SOL', unit: '', basePrice: 120, icon: '◎', volatility: 0.03 },
+                { name: 'Dogecoin', symbol: 'DOGE', unit: '', basePrice: 0.08, icon: '🐕', volatility: 0.04 }
+            ],
+            'Stock Indices': [
+                { name: 'S&P 500', symbol: 'SPY', unit: '', basePrice: 450, icon: '📈', volatility: 0.01 },
+                { name: 'Nasdaq', symbol: 'QQQ', unit: '', basePrice: 380, icon: '💹', volatility: 0.012 },
+                { name: 'Dow Jones', symbol: 'DIA', unit: '', basePrice: 350, icon: '📊', volatility: 0.008 }
+            ],
+            'Luxury Watches': [
+                { name: 'Rolex Submariner', symbol: 'ROLEX-SUB', unit: '', basePrice: 9500, icon: '⌚', volatility: 0.001 },
+                { name: 'Rolex Daytona', symbol: 'ROLEX-DAY', unit: '', basePrice: 35000, icon: '⌚', volatility: 0.001 },
+                { name: 'AP Royal Oak', symbol: 'AP-RO', unit: '', basePrice: 35000, icon: '⌚', volatility: 0.002 },
+                { name: 'Patek Nautilus', symbol: 'PATEK-NAU', unit: '', basePrice: 70000, icon: '⌚', volatility: 0.002 }
+            ],
+            'Collectibles': [
+                { name: 'Charizard PSA 10', symbol: 'CHAR-PSA10', unit: '', basePrice: 350000, icon: '🔥', volatility: 0.005 },
+                { name: 'Black Lotus', symbol: 'MTG-LOTUS', unit: '', basePrice: 500000, icon: '🌸', volatility: 0.004 },
+                { name: 'Action Comics #1', symbol: 'AC1', unit: '', basePrice: 3200000, icon: '📚', volatility: 0.003 }
+            ],
+            'Consumer Goods': [
+                { name: 'Eggs (dozen)', symbol: 'EGGS', unit: '', basePrice: 4.25, icon: '🥚', volatility: 0.01 },
+                { name: 'Milk (gallon)', symbol: 'MILK', unit: '', basePrice: 4.50, icon: '🥛', volatility: 0.008 },
+                { name: 'Gas (gallon)', symbol: 'GAS', unit: '', basePrice: 3.45, icon: '⛽', volatility: 0.02 },
+                { name: 'Coffee (lb)', symbol: 'COFFEE', unit: '', basePrice: 12.99, icon: '☕', volatility: 0.015 }
+            ],
+            'Real Estate': [
+                { name: 'US Median House', symbol: 'HOUSE-US', unit: '', basePrice: 420000, icon: '🏠', volatility: 0.0005 },
+                { name: 'Canada Median House', symbol: 'HOUSE-CA', unit: '', basePrice: 750000, icon: '🏡', volatility: 0.0007 },
+                { name: 'NYC Apt/sqft', symbol: 'NYC-SQFT', unit: '/sqft', basePrice: 1500, icon: '🏢', volatility: 0.001 }
+            ],
+            'Technology': [
+                { name: 'RTX 4090', symbol: 'RTX-4090', unit: '', basePrice: 1599, icon: '🎮', volatility: 0.01 },
+                { name: 'iPhone 15 Pro', symbol: 'IPHONE15', unit: '', basePrice: 999, icon: '📱', volatility: 0.005 },
+                { name: 'PS5', symbol: 'PS5', unit: '', basePrice: 499, icon: '🎮', volatility: 0.008 }
+            ]
+        };
+
+        // Constants
+        const UPDATE_INTERVAL = 300000; // 5 minutes (more appropriate for long-term tracking)
+        const MAX_DATA_AGE = 365 * 24 * 60 * 60 * 1000; // 1 year of data
+        const STORAGE_KEY = 'priceTrackerHistory';
+        const SETTINGS_KEY = 'priceTrackerSettings';
+        const DEFAULT_PERIOD = '1W'; // Default to weekly view
+
+        // State management
+        let currentPrices = {};
+        let historicalData = {};
+        let favorites = [];
+        let currentView = 'grid';
+        let searchQuery = '';
+        let updateInterval;
+        let selectedPeriod = '1M'; // Default to monthly view
+
+        // Initialize or load historical data
+        function initializeData() {
+            // Load saved data
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            const savedSettings = localStorage.getItem(SETTINGS_KEY);
+            
+            if (savedData) {
+                try {
+                    historicalData = JSON.parse(savedData);
+                    cleanOldData(); // Clean data older than 30 days
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                    historicalData = {};
+                }
+            }
+
+            if (savedSettings) {
+                try {
+                    const settings = JSON.parse(savedSettings);
+                    favorites = settings.favorites || [];
+                } catch (e) {
+                    favorites = [];
+                }
+            }
+
+            // Initialize current prices
+            Object.values(categories).flat().forEach(item => {
+                if (!historicalData[item.symbol]) {
+                    historicalData[item.symbol] = [];
+                }
+                
+                // Get last known price or use base price
+                const history = historicalData[item.symbol];
+                const lastEntry = history[history.length - 1];
+                const basePrice = lastEntry ? lastEntry.price : item.basePrice * (0.95 + Math.random() * 0.1);
+                
+                currentPrices[item.symbol] = basePrice;
+                
+                // Add initial data point if none exists
+                if (history.length === 0) {
+                    addDataPoint(item.symbol, basePrice);
+                    console.log(`Started tracking ${item.name} at ${formatPrice(basePrice)}`);
+                }
+            });
+
+            // Show welcome message for new users
+            if (Object.values(historicalData).every(h => h.length <= 1)) {
+                setTimeout(() => {
+                    alert('Welcome to Universal Price Tracker!\n\n' +
+                          '📊 This tracker focuses on long-term market trends.\n' +
+                          '⏰ Prices update every 5 minutes.\n' +
+                          '📈 Charts will build up over days/weeks.\n' +
+                          '💾 All data is saved locally in your browser.\n\n' +
+                          'Leave this page open or bookmark it to build your historical data!');
+                }, 1000);
+            }
+
+            saveData();
+        }
+
+        // Add a data point
+        function addDataPoint(symbol, price) {
+            if (!historicalData[symbol]) {
+                historicalData[symbol] = [];
+            }
+            
+            historicalData[symbol].push({
+                timestamp: Date.now(),
+                price: price
+            });
+
+            // Keep reasonable data size - more for longer term tracking
+            if (historicalData[symbol].length > 50000) {
+                historicalData[symbol] = historicalData[symbol].slice(-25000);
+            }
+        }
+
+        // Get historical data for a period
+        function getHistoricalData(symbol, period = '1W') {
+            const data = historicalData[symbol] || [];
+            if (data.length === 0) return [];
+
+            const now = Date.now();
+            let startTime;
+
+            switch (period) {
+                case '24h':
+                    startTime = now - (24 * 60 * 60 * 1000);
+                    break;
+                case '1W':
+                    startTime = now - (7 * 24 * 60 * 60 * 1000);
+                    break;
+                case '1M':
+                    startTime = now - (30 * 24 * 60 * 60 * 1000);
+                    break;
+                case '3M':
+                    startTime = now - (90 * 24 * 60 * 60 * 1000);
+                    break;
+                case '1Y':
+                    startTime = now - (365 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'ALL':
+                    startTime = 0;
+                    break;
+                default:
+                    startTime = now - (7 * 24 * 60 * 60 * 1000); // Default to 1 week
+            }
+
+            return data.filter(point => point.timestamp >= startTime);
+        }
+
+        // Calculate statistics
+        function calculateStats(data) {
+            if (!data || data.length === 0) {
+                return { change: 0, changePercent: 0, high: 0, low: 0, open: 0 };
+            }
+
+            const prices = data.map(d => d.price);
+            const open = prices[0];
+            const close = prices[prices.length - 1];
+            const high = Math.max(...prices);
+            const low = Math.min(...prices);
+            const change = close - open;
+            const changePercent = open > 0 ? (change / open) * 100 : 0;
+
+            return { change, changePercent, high, low, open, close };
+        }
+
+        // Format price
+        function formatPrice(price) {
+            if (!price || isNaN(price)) return '$0';
+            if (price >= 1000000) {
+                return `${(price / 1000000).toFixed(2)}M`;
+            } else if (price >= 10000) {
+                return `${(price / 1000).toFixed(1)}K`;
+            } else if (price >= 100) {
+                return `${price.toFixed(0)}`;
+            } else if (price >= 10) {
+                return `${price.toFixed(2)}`;
+            } else {
+                return `${price.toFixed(4)}`;
+            }
+        }
+
+        // Check if trending (significant weekly movement)
+        function isTrending(symbol) {
+            const data = getHistoricalData(symbol, '1W');
+            const stats = calculateStats(data);
+            return Math.abs(stats.changePercent) > 5; // 5% weekly change is significant
+        }
+
+        // Create SVG chart with interactive hover
+        function createChart(data, width = 280, height = 60, showDots = false, symbol = '') {
+            if (!data || data.length === 0) {
+                return `<div style="text-align: center; color: #666; padding: 20px; font-size: 0.85rem;">
+                    No data yet<br>
+                    <span style="font-size: 0.75rem;">Starting collection...</span>
+                </div>`;
+            }
+            
+            if (data.length === 1) {
+                return `<div style="text-align: center; color: #666; padding: 20px; font-size: 0.85rem;">
+                    ${formatPrice(data[0].price)}<br>
+                    <span style="font-size: 0.75rem;">Waiting for next update...</span>
+                </div>`;
+            }
+
+            // For sparse data in early stages, interpolate to make smoother lines
+            const prices = data.map(d => d.price);
+            const timestamps = data.map(d => d.timestamp);
+            
+            const minPrice = Math.min(...prices);
+            const maxPrice = Math.max(...prices);
+            const priceRange = maxPrice - minPrice || 1;
+            
+            const minTime = Math.min(...timestamps);
+            const maxTime = Math.max(...timestamps);
+            const timeRange = maxTime - minTime || 1;
+
+            const padding = 5;
+            const chartWidth = width - (padding * 2);
+            const chartHeight = height - (padding * 2);
+
+            // Create points
+            const points = data.map((d, i) => {
+                const x = padding + ((d.timestamp - minTime) / timeRange) * chartWidth;
+                const y = padding + (1 - ((d.price - minPrice) / priceRange)) * chartHeight;
+                return { x, y, price: d.price, timestamp: d.timestamp };
+            });
+
+            // Create smooth path using bezier curves for better appearance with sparse data
+            let pathData = '';
+            if (points.length === 2) {
+                // Simple line for 2 points
+                pathData = `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
+            } else {
+                // Create smooth curve
+                pathData = `M ${points[0].x} ${points[0].y}`;
+                for (let i = 1; i < points.length; i++) {
+                    const cp1x = (points[i-1].x + points[i].x) / 2;
+                    const cp1y = points[i-1].y;
+                    const cp2x = (points[i-1].x + points[i].x) / 2;
+                    const cp2y = points[i].y;
+                    pathData += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${points[i].x} ${points[i].y}`;
+                }
+            }
+            
+            // Create fill path
+            const fillPath = pathData + ` L ${points[points.length - 1].x} ${height - padding} L ${padding} ${height - padding} Z`;
+
+            const isPositive = prices[prices.length - 1] >= prices[0];
+            const color = isPositive ? '#00ff88' : '#ff4d4d';
+            const chartId = `chart-${symbol.replace(/[^a-zA-Z0-9]/g, '')}-${Math.random().toString(36).substr(2, 9)}`;
+            const gradientId = `gradient-${symbol.replace(/[^a-zA-Z0-9]/g, '')}-${Math.random().toString(36).substr(2, 9)}`;
+
+            // Create interactive areas for hover
+            let interactiveElements = '';
+            if (width > 100) { // Only add interactivity for larger charts
+                // Create invisible rectangles for hover detection
+                const segmentWidth = chartWidth / Math.max(1, points.length - 1);
+                points.forEach((point, i) => {
+                    const x = i === 0 ? 0 : point.x - segmentWidth / 2;
+                    const rectWidth = i === 0 || i === points.length - 1 ? segmentWidth / 2 : segmentWidth;
+                    interactiveElements += `
+                        <rect class="hover-area" 
+                              x="${x}" y="0" 
+                              width="${rectWidth}" height="${height}"
+                              fill="transparent"
+                              data-index="${i}"
+                              data-price="${point.price}"
+                              data-timestamp="${point.timestamp}"
+                              data-x="${point.x}"
+                              data-y="${point.y}"
+                              style="cursor: crosshair;"
+                        />
+                    `;
+                });
+
+                // Add hover line and dot
+                interactiveElements += `
+                    <line class="chart-hover-line" id="hover-line-${chartId}" 
+                          x1="0" y1="0" x2="0" y2="${height}" 
+                          style="display: none;" />
+                    <circle class="chart-hover-dot" id="hover-dot-${chartId}" 
+                            cx="0" cy="0" r="4" />
+                `;
+            }
+
+            let svg = `
+                <svg class="chart-svg" id="${chartId}" viewBox="0 0 ${width} ${height}" data-symbol="${symbol}">
+                    <defs>
+                        <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:${color};stop-opacity:0.3" />
+                            <stop offset="100%" style="stop-color:${color};stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="${fillPath}" fill="url(#${gradientId})" />
+                    <path d="${pathData}" fill="none" stroke="${color}" stroke-width="2" />
+            `;
+
+            // Show dots for sparse data or when requested
+            if ((showDots && points.length < 50) || points.length < 10) {
+                points.forEach(p => {
+                    svg += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${color}" stroke="#0f0f1e" stroke-width="1" />`;
+                });
+            }
+
+            svg += interactiveElements + '</svg>';
+
+            // Add tooltip div after svg
+            if (width > 100) {
+                svg += `<div class="chart-tooltip" id="tooltip-${chartId}"></div>`;
+            }
+
+            return svg;
+        }
+
+        // Toggle favorite
+        function toggleFavorite(symbol, event) {
+            event.stopPropagation();
+            const index = favorites.indexOf(symbol);
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(symbol);
+            }
+            saveSettings();
+            render();
+        }
+
+        // Create item card
+        function createCard(item) {
+            const price = currentPrices[item.symbol];
+            const dataWeek = getHistoricalData(item.symbol, '1W');
+            const dataMonth = getHistoricalData(item.symbol, '1M');
+            const stats = calculateStats(dataWeek);
+            const isFavorite = favorites.includes(item.symbol);
+            const trending = isTrending(item.symbol);
+
+            if (currentView === 'list') {
+                return `
+                    <div class="item-card" onclick="showDetails('${item.symbol}')">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
+                                    onclick="toggleFavorite('${item.symbol}', event)">
+                                ${isFavorite ? '⭐' : '☆'}
+                            </button>
+                            <span class="item-icon">${item.icon}</span>
+                            <div>
+                                <div style="font-weight: 600;">${item.name}</div>
+                                <span class="item-symbol">${item.symbol}</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="current-price" style="font-size: 1.5rem;">
+                                ${formatPrice(price)}${item.unit}
+                            </div>
+                            <span class="price-change ${stats.changePercent >= 0 ? 'positive' : 'negative'}">
+                                ${stats.changePercent >= 0 ? '▲' : '▼'} ${Math.abs(stats.changePercent).toFixed(2)}%
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Use monthly data for the chart, weekly for stats
+            const chartData = dataMonth.length > 10 ? dataMonth : dataWeek;
+
+            return `
+                <div class="item-card ${trending ? 'trending' : ''}" onclick="showDetails('${item.symbol}')">
+                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
+                            onclick="toggleFavorite('${item.symbol}', event)">
+                        ${isFavorite ? '⭐' : '☆'}
+                    </button>
+                    ${trending ? '<span class="trending-badge">🔥 Hot</span>' : ''}
+                    
+                    <div class="item-header">
+                        <div class="item-name">
+                            <span class="item-icon">${item.icon}</span>
+                            <span>${item.name}</span>
+                        </div>
+                        <span class="item-symbol">${item.symbol}</span>
+                    </div>
+                    
+                    <div class="price-container">
+                        <div class="current-price" id="price-${item.symbol}">
+                            ${formatPrice(price)}${item.unit}
+                        </div>
+                        <span class="price-change ${stats.changePercent >= 0 ? 'positive' : 'negative'}" 
+                              id="change-${item.symbol}"
+                              title="Weekly change">
+                            ${stats.changePercent >= 0 ? '▲' : '▼'} ${Math.abs(stats.changePercent).toFixed(2)}%
+                        </span>
+                    </div>
+                    
+                    <div class="item-stats">
+                        <div class="stat">
+                            <div class="stat-label">Week High</div>
+                            <div class="stat-value" id="high-${item.symbol}">
+                                ${formatPrice(stats.high || price)}
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Week Low</div>
+                            <div class="stat-value" id="low-${item.symbol}">
+                                ${formatPrice(stats.low || price)}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-period">
+                            <span style="color: #666;">${chartData.length > 100 ? '1M' : '1W'} Chart</span>
+                            <span style="margin-left: auto; color: #666; font-size: 0.7rem;">
+                                ${chartData.length < 10 ? '🔄 Building...' : chartData.length + ' points'}
+                            </span>
+                        </div>
+                        <div class="chart-mini" id="chart-${item.symbol}">
+                            ${createChart(chartData, 280, 60, false, item.symbol)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show details modal
+        function showDetails(symbol) {
+            const item = Object.values(categories).flat().find(i => i.symbol === symbol);
+            if (!item) return;
+
+            const price = currentPrices[symbol];
+            selectedPeriod = '1M'; // Default to monthly view
+
+            function updateModalChart(period) {
+                const data = getHistoricalData(symbol, period);
+                const stats = calculateStats(data);
+                
+                document.getElementById('modalChart').innerHTML = createChart(data, 760, 260, true, symbol);
+                document.getElementById('modalStats').innerHTML = `
+                    <div class="stat-box">
+                        <h3>${formatPrice(stats.open || price)}</h3>
+                        <p>Open</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${formatPrice(stats.high || price)}</h3>
+                        <p>High</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${formatPrice(stats.low || price)}</h3>
+                        <p>Low</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${data.length}</h3>
+                        <p>Data Points</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3 class="${stats.changePercent >= 0 ? 'positive' : 'negative'}">
+                            ${stats.changePercent >= 0 ? '+' : ''}${stats.changePercent.toFixed(2)}%
+                        </h3>
+                        <p>Change</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${formatPrice(Math.abs(stats.change))}</h3>
+                        <p>$ Change</p>
+                    </div>
+                `;
+
+                // Update period buttons
+                document.querySelectorAll('.period-selector .btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-period') === period) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modal-header">
+                    <h2 style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                        <span style="font-size: 3rem;">${item.icon}</span>
+                        <span>${item.name}</span>
+                    </h2>
+                    <p style="color: #888; margin-top: 10px;">${item.symbol}</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="modal-price">${formatPrice(price)}${item.unit}</div>
+                </div>
+
+                <div class="period-selector">
+                    <button class="btn" data-period="24h" onclick="updateModalChart('24h')">24H</button>
+                    <button class="btn" data-period="1W" onclick="updateModalChart('1W')">1W</button>
+                    <button class="btn active" data-period="1M" onclick="updateModalChart('1M')">1M</button>
+                    <button class="btn" data-period="3M" onclick="updateModalChart('3M')">3M</button>
+                    <button class="btn" data-period="1Y" onclick="updateModalChart('1Y')">1Y</button>
+                    <button class="btn" data-period="ALL" onclick="updateModalChart('ALL')">ALL</button>
+                </div>
+
+                <div class="chart-large" id="modalChart"></div>
+
+                <div class="modal-stats" id="modalStats"></div>
+
+                <div style="text-align: center; margin-top: 20px; color: #666;">
+                    <p>Base Price: ${formatPrice(item.basePrice)} • Volatility: ${(item.volatility * 100).toFixed(1)}%</p>
+                    <p style="margin-top: 10px;">Total historical data points: ${historicalData[symbol].length}</p>
+                </div>
+            `;
+
+            // Add chart update function to window for onclick
+            window.updateModalChart = updateModalChart;
+            updateModalChart('1M'); // Default to monthly view
+
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // Close modal on background click
+        function closeModalOnBg(event) {
+            if (event.target.id === 'detailModal') {
+                closeModal();
+            }
+        }
+
+        // Update single item price
+        function updateItemPrice(item) {
+            const oldPrice = currentPrices[item.symbol];
+            // Reduced volatility for longer-term tracking (divide by 3)
+            const adjustedVolatility = item.volatility / 3;
+            const change = (Math.random() - 0.5) * adjustedVolatility;
+            const newPrice = Math.max(oldPrice * (1 + change), item.basePrice * 0.1); // Prevent negative
+            
+            currentPrices[item.symbol] = newPrice;
+            addDataPoint(item.symbol, newPrice);
+        }
+
+        // Update statistics
+        function updateStats() {
+            const allItems = Object.values(categories).flat();
+            let gainers = 0;
+            let losers = 0;
+            let totalDataPoints = 0;
+
+            allItems.forEach(item => {
+                const data = getHistoricalData(item.symbol, '1W'); // Weekly stats
+                const stats = calculateStats(data);
+                if (stats.changePercent > 0) gainers++;
+                else if (stats.changePercent < 0) losers++;
+                
+                totalDataPoints += (historicalData[item.symbol] || []).length;
+            });
+
+            document.getElementById('totalItems').textContent = allItems.length;
+            document.getElementById('gainers').textContent = gainers;
+            document.getElementById('losers').textContent = losers;
+            document.getElementById('dataPoints').textContent = totalDataPoints.toLocaleString();
+
+            // Update data info
+            const oldestData = Math.min(...Object.values(historicalData).flat().map(d => d.timestamp).filter(t => t));
+            const dataAge = oldestData ? Math.floor((Date.now() - oldestData) / (1000 * 60 * 60 * 24)) : 0;
+            document.getElementById('dataInfo').textContent = 
+                `Historical data: ${dataAge} days • Storage: ${(JSON.stringify(historicalData).length / 1024).toFixed(1)}KB`;
+        }
+
+        // Update all prices
+        function updateAllPrices() {
+            Object.values(categories).flat().forEach(updateItemPrice);
+            document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
+            updateStats();
+            saveData();
+            render();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(historicalData));
+            } catch (e) {
+                console.error('Error saving data:', e);
+                // If storage is full, remove oldest data
+                cleanOldData(true);
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify({ favorites }));
+        }
+
+        // Clean old data
+        function cleanOldData(force = false) {
+            const cutoffTime = Date.now() - MAX_DATA_AGE;
+            let cleaned = false;
+
+            Object.keys(historicalData).forEach(symbol => {
+                const newData = historicalData[symbol].filter(point => point.timestamp > cutoffTime);
+                if (newData.length < historicalData[symbol].length || force) {
+                    historicalData[symbol] = force ? newData.slice(-1000) : newData;
+                    cleaned = true;
+                }
+            });
+
+            if (cleaned) {
+                saveData();
+            }
+        }
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify({
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                data: historicalData,
+                settings: { favorites }
+            }, null, 2);
+            
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `price-tracker-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all historical data? This cannot be undone.')) {
+                historicalData = {};
+                initializeData();
+                render();
+                alert('All data has been cleared.');
+            }
+        }
+
+        // Clear old data manually
+        function clearOldData() {
+            const before = JSON.stringify(historicalData).length;
+            cleanOldData(true);
+            const after = JSON.stringify(historicalData).length;
+            const saved = ((before - after) / 1024).toFixed(1);
+            alert(`Old data cleaned up.\nFreed ${saved}KB of storage.\nKept most recent data points for each item.`);
+            updateStats();
+        }
+
+        // Manual refresh
+        function manualRefresh() {
+            const btn = event.target;
+            btn.style.transform = 'rotate(360deg)';
+            btn.disabled = true;
+            
+            updateAllPrices();
+            
+            setTimeout(() => {
+                btn.style.transform = 'rotate(0deg)';
+                btn.disabled = false;
+            }, 500);
+        }
+
+        // Filter items
+        function filterItems() {
+            const query = searchQuery.toLowerCase();
+            if (!query) return categories;
+
+            const filtered = {};
+            Object.entries(categories).forEach(([category, items]) => {
+                const matches = items.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.symbol.toLowerCase().includes(query) ||
+                    category.toLowerCase().includes(query)
+                );
+                if (matches.length > 0) {
+                    filtered[category] = matches;
+                }
+            });
+            return filtered;
+        }
+
+        // Render categories
+        function renderCategories(categoriesToRender) {
+            const container = document.getElementById('categoriesContainer');
+            const cats = categoriesToRender || filterItems();
+            
+            if (Object.keys(cats).length === 0) {
+                container.innerHTML = '<div class="no-results">No items found. Try a different search term.</div>';
+                return;
+            }
+
+            container.innerHTML = Object.entries(cats).map(([name, items]) => `
+                <div class="category-section">
+                    <h2 class="category-title">${name}</h2>
+                    <div class="items-${currentView}">
+                        ${items.map(item => createCard(item)).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show favorites
+        function showFavorites() {
+            if (favorites.length === 0) {
+                document.getElementById('categoriesContainer').innerHTML = 
+                    '<div class="no-results">No favorites yet! Click the star ⭐ on any item to add it.</div>';
+                return;
+            }
+
+            const favoriteItems = Object.values(categories)
+                .flat()
+                .filter(item => favorites.includes(item.symbol));
+
+            const favCategory = { 'Favorites ⭐': favoriteItems };
+            renderCategories(favCategory);
+        }
+
+        // Set view type
+        function setView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-toggle .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            render();
+        }
+
+        // Render main view
+        function render() {
+            renderCategories();
+            updateStats();
+            // Re-setup chart interactivity after render
+            setTimeout(setupChartInteractivity, 100);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                render();
+            });
+
+            // Initialize data
+            initializeData();
+            render();
+            updateAllPrices();
+
+            // Start auto-update
+            updateInterval = setInterval(updateAllPrices, UPDATE_INTERVAL);
+
+            // Setup chart interactivity after initial render
+            setTimeout(setupChartInteractivity, 100);
+        });
+
+        // Setup chart hover interactivity
+        function setupChartInteractivity() {
+            // Event delegation for all charts
+            document.addEventListener('mousemove', handleChartHover);
+            document.addEventListener('mouseleave', handleChartLeave);
+        }
+
+        // Handle chart hover
+        function handleChartHover(e) {
+            const hoverArea = e.target.closest('.hover-area');
+            if (!hoverArea) return;
+
+            const svg = hoverArea.closest('svg');
+            if (!svg) return;
+
+            const chartId = svg.id;
+            const symbol = svg.dataset.symbol;
+            const price = parseFloat(hoverArea.dataset.price);
+            const timestamp = parseInt(hoverArea.dataset.timestamp);
+            const x = parseFloat(hoverArea.dataset.x);
+            const y = parseFloat(hoverArea.dataset.y);
+
+            // Update hover line and dot
+            const hoverLine = svg.querySelector(`#hover-line-${chartId}`);
+            const hoverDot = svg.querySelector(`#hover-dot-${chartId}`);
+            
+            if (hoverLine) {
+                hoverLine.style.display = 'block';
+                hoverLine.setAttribute('x1', x);
+                hoverLine.setAttribute('x2', x);
+            }
+
+            if (hoverDot) {
+                hoverDot.classList.add('visible');
+                hoverDot.setAttribute('cx', x);
+                hoverDot.setAttribute('cy', y);
+            }
+
+            // Show tooltip
+            showTooltip(e, chartId, price, timestamp, symbol);
+        }
+
+        // Handle mouse leave
+        function handleChartLeave(e) {
+            if (!e.target.closest('.chart-svg')) return;
+
+            // Hide all tooltips and hover elements
+            document.querySelectorAll('.chart-tooltip').forEach(tooltip => {
+                tooltip.classList.remove('visible');
+            });
+
+            document.querySelectorAll('.chart-hover-line').forEach(line => {
+                line.style.display = 'none';
+            });
+
+            document.querySelectorAll('.chart-hover-dot').forEach(dot => {
+                dot.classList.remove('visible');
+            });
+        }
+
+        // Show tooltip
+        function showTooltip(e, chartId, price, timestamp, symbol) {
+            const tooltip = document.getElementById(`tooltip-${chartId}`);
+            if (!tooltip) return;
+
+            const date = new Date(timestamp);
+            const item = Object.values(categories).flat().find(i => i.symbol === symbol);
+            
+            // Calculate change from start of period
+            const data = getHistoricalData(symbol, selectedPeriod);
+            let changeText = '';
+            if (data && data.length > 0) {
+                const firstPrice = data[0].price;
+                const change = ((price - firstPrice) / firstPrice) * 100;
+                changeText = `<div class="chart-tooltip-change ${change >= 0 ? 'positive' : 'negative'}">
+                    ${change >= 0 ? '+' : ''}${change.toFixed(2)}% from period start
+                </div>`;
+            }
+
+            tooltip.innerHTML = `
+                <div class="chart-tooltip-price">${formatPrice(price)}</div>
+                <div class="chart-tooltip-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                ${changeText}
+            `;
+
+            // Position tooltip
+            const rect = e.target.closest('.chart-mini, .chart-large').getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Adjust position to avoid edge overflow
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let left = x + 10;
+            let top = y - tooltipRect.height - 10;
+
+            if (left + tooltipRect.width > rect.width) {
+                left = x - tooltipRect.width - 10;
+            }
+
+            if (top < 0) {
+                top = y + 20;
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+            tooltip.classList.add('visible');
+        }
+
+        // Background update system
+        let isPageVisible = true;
+        let backgroundUpdateInterval;
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = !document.hidden;
+            
+            if (!isPageVisible) {
+                // Page is hidden - start background updates
+                startBackgroundUpdates();
+                updateBackgroundIndicator(true);
+            } else {
+                // Page is visible - stop background updates and use normal updates
+                stopBackgroundUpdates();
+                updateBackgroundIndicator(false);
+                // Update immediately when page becomes visible
+                updateAllPrices();
+                
+                // Show notification if data was collected in background
+                const lastUpdate = localStorage.getItem('lastBackgroundUpdate');
+                if (lastUpdate) {
+                    const timeDiff = Date.now() - parseInt(lastUpdate);
+                    if (timeDiff < UPDATE_INTERVAL * 2) {
+                        showNotification('Data collected while you were away!');
+                    }
+                    localStorage.removeItem('lastBackgroundUpdate');
+                }
+            }
+        });
+
+        // Update background indicator
+        function updateBackgroundIndicator(isActive) {
+            const indicator = document.getElementById('bgIndicator');
+            if (indicator) {
+                if (isActive) {
+                    indicator.classList.remove('inactive');
+                    indicator.innerHTML = `
+                        <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                        Background Collection Active
+                    `;
+                } else {
+                    indicator.classList.add('inactive');
+                    indicator.innerHTML = `
+                        <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                        Tab Active - Collecting Data
+                    `;
+                }
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #1a1a2e;
+                border: 1px solid #00ff88;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: #00ff88;
+                font-size: 0.9rem;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Start background updates
+        function startBackgroundUpdates() {
+            console.log('Starting background updates...');
+            
+            // Continue updates even when page is hidden
+            if (!backgroundUpdateInterval) {
+                backgroundUpdateInterval = setInterval(() => {
+                    if (!isPageVisible) {
+                        // Simple price updates without UI rendering
+                        Object.values(categories).flat().forEach(item => {
+                            updateItemPrice(item);
+                        });
+                        saveData();
+                        console.log('Background update completed at', new Date().toLocaleTimeString());
+                    }
+                }, UPDATE_INTERVAL);
+            }
+        }
+
+        // Stop background updates
+        function stopBackgroundUpdates() {
+            console.log('Stopping background updates...');
+            if (backgroundUpdateInterval) {
+                clearInterval(backgroundUpdateInterval);
+                backgroundUpdateInterval = null;
+            }
+        }
+
+        // Enhanced update all prices for background compatibility
+        function updateAllPrices() {
+            Object.values(categories).flat().forEach(updateItemPrice);
+            
+            // Only update UI if page is visible
+            if (isPageVisible) {
+                document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
+                updateStats();
+                render();
+            }
+            
+            saveData();
+            
+            // Log update for debugging
+            if (!isPageVisible) {
+                console.log('Background data collection active:', new Date().toLocaleTimeString());
+            }
+        }
+
+        // Prevent page unload if data is being collected
+        window.addEventListener('beforeunload', (e) => {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+            if (backgroundUpdateInterval) {
+                clearInterval(backgroundUpdateInterval);
+            }
+            saveData();
+            
+            // Get total data points
+            const totalPoints = Object.values(historicalData).reduce((sum, data) => sum + data.length, 0);
+            
+            // Warn user if they have significant data
+            if (totalPoints > 100) {
+                e.preventDefault();
+                e.returnValue = 'You have collected ' + totalPoints + ' data points. Are you sure you want to leave?';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            if (e.key === 'r' && e.ctrlKey) {
+                e.preventDefault();
+                manualRefresh();
+            }
+        });
+    </script>
+</body>
+</html>

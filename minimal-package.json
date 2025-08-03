@@ -1,0 +1,23 @@
+{
+  "name": "universal-price-tracker",
+  "version": "1.0.0",
+  "description": "Track everything from Bitcoin to Rolex watches - no backend needed!",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'Open index.html in your browser!'",
+    "serve": "python3 -m http.server 8000 || python -m SimpleHTTPServer 8000"
+  },
+  "keywords": [
+    "price-tracker",
+    "bitcoin",
+    "cryptocurrency", 
+    "rolex",
+    "gold",
+    "stocks",
+    "commodities",
+    "real-time"
+  ],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/price-tracker"
+}
