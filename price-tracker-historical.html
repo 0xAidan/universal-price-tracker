@@ -10,6 +10,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📈</text></svg>">
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -519,15 +523,25 @@
         }
 
         .chart-large {
-            height: 300px;
+            height: 400px;
             background: rgba(0, 212, 255, 0.05);
             border-radius: 10px;
             margin: 30px 0;
             padding: 20px;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+
+        .chart-small {
+            height: 60px;
+            width: 100%;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
         }
 
         .period-selector {
@@ -1161,11 +1175,221 @@
                             </span>
                         </div>
                         <div class="chart-mini" id="chart-${item.symbol}">
-                            ${createChart(chartData, 280, 60, false, item.symbol)}
+                            <canvas id="miniChart-${item.symbol}" class="chart-small"></canvas>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        // Chart functionality
+        let modalChart = null;
+        const miniCharts = {};
+
+        // Create mini chart for grid items
+        function createMiniChart(symbol) {
+            const canvas = document.getElementById(`miniChart-${symbol}`);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const data = getHistoricalData(symbol, '24h');
+            
+            if (miniCharts[symbol]) {
+                miniCharts[symbol].destroy();
+            }
+
+            if (data.length < 2) {
+                return; // Not enough data for mini chart
+            }
+
+            const chartData = data.map(point => ({
+                x: new Date(point.timestamp),
+                y: point.price
+            }));
+
+            const firstPrice = data[0].price;
+            const lastPrice = data[data.length - 1].price;
+            const isPositive = lastPrice >= firstPrice;
+
+            miniCharts[symbol] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        data: chartData,
+                        borderColor: isPositive ? '#00ff88' : '#ff4d4d',
+                        borderWidth: 1.5,
+                        fill: true,
+                        backgroundColor: isPositive 
+                            ? 'rgba(0, 255, 136, 0.1)' 
+                            : 'rgba(255, 77, 77, 0.1)',
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    },
+                    elements: {
+                        point: { radius: 0 }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        // Create modal chart with Chart.js
+        function createModalChart(symbol, period = '1M') {
+            const canvas = document.getElementById('modalChartCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const data = getHistoricalData(symbol, period);
+
+            if (modalChart) {
+                modalChart.destroy();
+            }
+
+            if (data.length < 2) {
+                const chartContainer = document.getElementById('modalChart');
+                chartContainer.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; flex-direction: column;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                        <div>Not enough historical data for ${period}</div>
+                        <div style="font-size: 0.9rem; margin-top: 10px;">Data collection in progress...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const chartData = data.map(point => ({
+                x: new Date(point.timestamp),
+                y: point.price
+            }));
+
+            const firstPrice = data[0].price;
+            const lastPrice = data[data.length - 1].price;
+            const isPositive = lastPrice >= firstPrice;
+
+            // Find min and max for better scaling
+            const prices = data.map(d => d.price);
+            const minPrice = Math.min(...prices);
+            const maxPrice = Math.max(...prices);
+            const padding = (maxPrice - minPrice) * 0.1;
+
+            modalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: `Price History (${period})`,
+                        data: chartData,
+                        borderColor: isPositive ? '#00ff88' : '#ff4d4d',
+                        borderWidth: 2,
+                        fill: true,
+                        backgroundColor: isPositive 
+                            ? 'rgba(0, 255, 136, 0.1)' 
+                            : 'rgba(255, 77, 77, 0.1)',
+                        tension: 0.4,
+                        pointRadius: 1,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: isPositive ? '#00ff88' : '#ff4d4d',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: isPositive ? '#00ff88' : '#ff4d4d',
+                            borderWidth: 1,
+                            displayColors: false,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                title: function(context) {
+                                    return new Date(context[0].parsed.x).toLocaleString();
+                                },
+                                label: function(context) {
+                                    const price = context.parsed.y;
+                                    const item = Object.values(categories).flat().find(i => i.symbol === symbol);
+                                    return `Price: ${formatPrice(price)}${item?.unit || ''}`;
+                                },
+                                afterLabel: function(context) {
+                                    const currentIndex = context.dataIndex;
+                                    if (currentIndex > 0) {
+                                        const previousPrice = chartData[currentIndex - 1].y;
+                                        const currentPrice = context.parsed.y;
+                                        const change = currentPrice - previousPrice;
+                                        const changePercent = (change / previousPrice) * 100;
+                                        const changeText = change >= 0 ? '+' : '';
+                                        return `Change: ${changeText}${formatPrice(Math.abs(change))} (${changeText}${changePercent.toFixed(2)}%)`;
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    hour: 'HH:mm',
+                                    day: 'MMM dd',
+                                    week: 'MMM dd',
+                                    month: 'MMM yyyy'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#888',
+                                maxTicksLimit: 8
+                            }
+                        },
+                        y: {
+                            min: Math.max(0, minPrice - padding),
+                            max: maxPrice + padding,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#888',
+                                callback: function(value) {
+                                    return formatPrice(value);
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    onHover: (event, activeElements) => {
+                        event.native.target.style.cursor = activeElements.length > 0 ? 'crosshair' : 'default';
+                    }
+                }
+            });
         }
 
         // Show details modal
@@ -1180,7 +1404,7 @@
                 const data = getHistoricalData(symbol, period);
                 const stats = calculateStats(data);
                 
-                document.getElementById('modalChart').innerHTML = createChart(data, 760, 260, true, symbol);
+                createModalChart(symbol, period);
                 document.getElementById('modalStats').innerHTML = `
                     <div class="stat-box">
                         <h3>${formatPrice(stats.open || price)}</h3>
@@ -1241,7 +1465,11 @@
                     <button class="btn" data-period="ALL" onclick="updateModalChart('ALL')">ALL</button>
                 </div>
 
-                <div class="chart-large" id="modalChart"></div>
+                <div class="chart-large" id="modalChart">
+                    <div class="chart-container">
+                        <canvas id="modalChartCanvas"></canvas>
+                    </div>
+                </div>
 
                 <div class="modal-stats" id="modalStats"></div>
 
@@ -1506,6 +1734,12 @@
             updateStats();
             // Re-setup chart interactivity after render
             setTimeout(setupChartInteractivity, 100);
+            // Create mini charts after render
+            setTimeout(() => {
+                Object.values(categories).flat().forEach(item => {
+                    createMiniChart(item.symbol);
+                });
+            }, 200);
         }
 
         // Initialize
@@ -1526,6 +1760,9 @@
 
             // Setup chart interactivity after initial render
             setTimeout(setupChartInteractivity, 100);
+            
+            // Start background updates
+            setTimeout(startBackgroundUpdates, 2000);
         });
 
         // Setup chart hover interactivity
@@ -1774,6 +2011,11 @@
                 document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
                 updateStats();
                 render();
+                
+                // Update mini charts with new data
+                Object.values(categories).flat().forEach(item => {
+                    setTimeout(() => createMiniChart(item.symbol), 100);
+                });
             }
             
             saveData();
