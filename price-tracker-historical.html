@@ -67,6 +67,7 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
         header {
@@ -213,17 +214,28 @@
         .category-title {
             font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #00d4ff;
             border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border-radius: 2px;
         }
 
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
         .items-list {
@@ -239,206 +251,335 @@
         }
 
         .item-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
             padding: 25px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .item-card.trending {
-            border-color: rgba(0, 255, 136, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+            border-color: rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.15);
         }
 
         .trending-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #00ff88;
-            color: #0f0f1e;
-            padding: 3px 10px;
-            border-radius: 15px;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6b35, #ff8e35);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            z-index: 5;
+            animation: hotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hotPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 4px 16px rgba(255, 107, 53, 0.5);
+            }
         }
 
         .item-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
-            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(0, 212, 255, 0.25);
+            border-color: rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .item-card:active {
+            transform: translateY(-4px) scale(1.01);
         }
 
         .favorite-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .favorite-btn:hover {
-            color: #ff4d4d;
-            transform: scale(1.2);
-        }
-
-        .favorite-btn.active {
-            color: #ff4d4d;
-        }
-
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .item-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #00d4ff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .item-icon {
-            font-size: 1.5rem;
-        }
-
-        .item-symbol {
-            font-size: 0.8rem;
-            color: #888;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 3px 8px;
-            border-radius: 5px;
-        }
-
-        .price-container {
-            margin-bottom: 15px;
-        }
-
-        .current-price {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .price-change {
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.9rem;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            gap: 5px;
-        }
-
-        .price-change.positive {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-        }
-
-        .price-change.negative {
-            background: rgba(255, 77, 77, 0.2);
-            color: #ff4d4d;
-        }
-
-        .item-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat {
-            font-size: 0.85rem;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-bottom: 3px;
-        }
-
-        .stat-value {
-            font-weight: 600;
-            color: #ccc;
-            transition: all 0.3s ease;
-        }
-
-        .chart-container {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .chart-period {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.75rem;
-        }
-
-        .period-btn {
-            padding: 4px 12px;
+            top: 15px;
+            left: 15px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: #888;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #666;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .period-btn.active {
-            background: rgba(0, 212, 255, 0.2);
-            color: #00d4ff;
-            border-color: #00d4ff;
-        }
-
-        .chart-mini {
-            height: 60px;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .chart-svg {
-            width: 100%;
+        .favorite-btn:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .item-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .item-symbol {
+            font-size: 0.85rem;
+            color: #888;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .price-container {
+            margin-bottom: 20px;
+            padding: 15px 0;
+        }
+
+        .current-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.95rem;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            gap: 6px;
+            border: 1px solid;
+        }
+
+        .price-change.positive {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .price-change.negative {
+            background: rgba(255, 77, 77, 0.15);
+            color: #ff4d4d;
+            border-color: rgba(255, 77, 77, 0.3);
+        }
+
+        .item-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .stat {
+            font-size: 0.9rem;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-label {
+            color: #888;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .chart-period {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+        }
+
+        .chart-mini {
+            height: 80px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .chart-small {
+            height: 80px !important;
+            width: 100% !important;
+        }
+
+        .chart-loading {
+            color: #666;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-top: 2px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-content {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 50px auto;
+            padding: 40px;
+            max-width: 900px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .chart-large {
+            height: 450px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 16px;
+            margin: 30px 0;
+            padding: 25px;
+            position: relative;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .period-selector .btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            min-width: 50px;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .modal-stats .stat-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .modal-stats .stat-box h3.positive {
+            color: #00ff88;
+        }
+
+        .modal-stats .stat-box h3.negative {
+            color: #ff4d4d;
+        }
+
+        .no-chart-data {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             height: 100%;
+            color: #666;
+            gap: 10px;
         }
 
-        .chart-line {
-            stroke: #00d4ff;
-            fill: none;
-            stroke-width: 2;
+        .no-chart-data-icon {
+            font-size: 2.5rem;
+            opacity: 0.5;
         }
 
-        .chart-fill {
-            fill: url(#gradient);
-            opacity: 0.1;
-        }
-
-        .chart-dot {
-            fill: #00d4ff;
-            stroke: #0f0f1e;
-            stroke-width: 2;
+        .clickable-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            cursor: pointer;
         }
 
         .refresh-btn {
@@ -475,17 +616,6 @@
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
-        }
-
-        .modal-content {
-            position: relative;
-            background: #1a1a2e;
-            margin: 50px auto;
-            padding: 40px;
-            max-width: 800px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: slideIn 0.3s ease;
         }
 
         .close-modal {
@@ -542,6 +672,12 @@
             position: relative;
             height: 100%;
             width: 100%;
+        }
+
+        .chart-container canvas {
+            display: block !important;
+            max-width: 100%;
+            height: auto;
         }
 
         .period-selector {
@@ -631,6 +767,42 @@
             .modal-content {
                 margin: 20px auto;
                 padding: 20px;
+                max-width: 95vw;
+            }
+            
+            .item-card {
+                padding: 20px;
+            }
+            
+            .trending-badge {
+                top: 12px;
+                right: 12px;
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+            
+            .favorite-btn {
+                top: 12px;
+                left: 12px;
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            
+            .item-name {
+                font-size: 1.1rem;
+            }
+            
+            .current-price {
+                font-size: 1.8rem;
+            }
+            
+            .chart-mini {
+                height: 70px;
+            }
+            
+            .chart-small {
+                height: 70px !important;
             }
         }
 
@@ -707,7 +879,14 @@
             </div>
         </header>
 
-        <div id="categoriesContainer"></div>
+        <div id="categoriesContainer">
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                <div style="font-size: 1.2rem; margin-bottom: 10px;">Loading Price Tracker...</div>
+                <div class="chart-loading-spinner" style="margin: 20px auto;"></div>
+                <div style="font-size: 0.9rem;">Initializing data and charts...</div>
+            </div>
+        </div>
 
         <button class="refresh-btn" onclick="manualRefresh()">🔄 Update Prices</button>
 
@@ -948,130 +1127,13 @@
             return Math.abs(stats.changePercent) > 5; // 5% weekly change is significant
         }
 
-        // Create SVG chart with interactive hover
+        // Legacy SVG chart function - now using Chart.js for all charts
         function createChart(data, width = 280, height = 60, showDots = false, symbol = '') {
-            if (!data || data.length === 0) {
-                return `<div style="text-align: center; color: #666; padding: 20px; font-size: 0.85rem;">
-                    No data yet<br>
-                    <span style="font-size: 0.75rem;">Starting collection...</span>
-                </div>`;
-            }
-            
-            if (data.length === 1) {
-                return `<div style="text-align: center; color: #666; padding: 20px; font-size: 0.85rem;">
-                    ${formatPrice(data[0].price)}<br>
-                    <span style="font-size: 0.75rem;">Waiting for next update...</span>
-                </div>`;
-            }
-
-            // For sparse data in early stages, interpolate to make smoother lines
-            const prices = data.map(d => d.price);
-            const timestamps = data.map(d => d.timestamp);
-            
-            const minPrice = Math.min(...prices);
-            const maxPrice = Math.max(...prices);
-            const priceRange = maxPrice - minPrice || 1;
-            
-            const minTime = Math.min(...timestamps);
-            const maxTime = Math.max(...timestamps);
-            const timeRange = maxTime - minTime || 1;
-
-            const padding = 5;
-            const chartWidth = width - (padding * 2);
-            const chartHeight = height - (padding * 2);
-
-            // Create points
-            const points = data.map((d, i) => {
-                const x = padding + ((d.timestamp - minTime) / timeRange) * chartWidth;
-                const y = padding + (1 - ((d.price - minPrice) / priceRange)) * chartHeight;
-                return { x, y, price: d.price, timestamp: d.timestamp };
-            });
-
-            // Create smooth path using bezier curves for better appearance with sparse data
-            let pathData = '';
-            if (points.length === 2) {
-                // Simple line for 2 points
-                pathData = `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
-            } else {
-                // Create smooth curve
-                pathData = `M ${points[0].x} ${points[0].y}`;
-                for (let i = 1; i < points.length; i++) {
-                    const cp1x = (points[i-1].x + points[i].x) / 2;
-                    const cp1y = points[i-1].y;
-                    const cp2x = (points[i-1].x + points[i].x) / 2;
-                    const cp2y = points[i].y;
-                    pathData += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${points[i].x} ${points[i].y}`;
-                }
-            }
-            
-            // Create fill path
-            const fillPath = pathData + ` L ${points[points.length - 1].x} ${height - padding} L ${padding} ${height - padding} Z`;
-
-            const isPositive = prices[prices.length - 1] >= prices[0];
-            const color = isPositive ? '#00ff88' : '#ff4d4d';
-            const chartId = `chart-${symbol.replace(/[^a-zA-Z0-9]/g, '')}-${Math.random().toString(36).substr(2, 9)}`;
-            const gradientId = `gradient-${symbol.replace(/[^a-zA-Z0-9]/g, '')}-${Math.random().toString(36).substr(2, 9)}`;
-
-            // Create interactive areas for hover
-            let interactiveElements = '';
-            if (width > 100) { // Only add interactivity for larger charts
-                // Create invisible rectangles for hover detection
-                const segmentWidth = chartWidth / Math.max(1, points.length - 1);
-                points.forEach((point, i) => {
-                    const x = i === 0 ? 0 : point.x - segmentWidth / 2;
-                    const rectWidth = i === 0 || i === points.length - 1 ? segmentWidth / 2 : segmentWidth;
-                    interactiveElements += `
-                        <rect class="hover-area" 
-                              x="${x}" y="0" 
-                              width="${rectWidth}" height="${height}"
-                              fill="transparent"
-                              data-index="${i}"
-                              data-price="${point.price}"
-                              data-timestamp="${point.timestamp}"
-                              data-x="${point.x}"
-                              data-y="${point.y}"
-                              style="cursor: crosshair;"
-                        />
-                    `;
-                });
-
-                // Add hover line and dot
-                interactiveElements += `
-                    <line class="chart-hover-line" id="hover-line-${chartId}" 
-                          x1="0" y1="0" x2="0" y2="${height}" 
-                          style="display: none;" />
-                    <circle class="chart-hover-dot" id="hover-dot-${chartId}" 
-                            cx="0" cy="0" r="4" />
-                `;
-            }
-
-            let svg = `
-                <svg class="chart-svg" id="${chartId}" viewBox="0 0 ${width} ${height}" data-symbol="${symbol}">
-                    <defs>
-                        <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:${color};stop-opacity:0.3" />
-                            <stop offset="100%" style="stop-color:${color};stop-opacity:0" />
-                        </linearGradient>
-                    </defs>
-                    <path d="${fillPath}" fill="url(#${gradientId})" />
-                    <path d="${pathData}" fill="none" stroke="${color}" stroke-width="2" />
-            `;
-
-            // Show dots for sparse data or when requested
-            if ((showDots && points.length < 50) || points.length < 10) {
-                points.forEach(p => {
-                    svg += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${color}" stroke="#0f0f1e" stroke-width="1" />`;
-                });
-            }
-
-            svg += interactiveElements + '</svg>';
-
-            // Add tooltip div after svg
-            if (width > 100) {
-                svg += `<div class="chart-tooltip" id="tooltip-${chartId}"></div>`;
-            }
-
-            return svg;
+            // This function is deprecated - all charts now use Chart.js
+            return `<div class="chart-loading">
+                <div class="chart-loading-spinner"></div>
+                <span>Loading chart...</span>
+            </div>`;
         }
 
         // Toggle favorite
@@ -1126,7 +1188,9 @@
             const chartData = dataMonth.length > 10 ? dataMonth : dataWeek;
 
             return `
-                <div class="item-card ${trending ? 'trending' : ''}" onclick="showDetails('${item.symbol}')">
+                <div class="item-card ${trending ? 'trending' : ''}" data-symbol="${item.symbol}">
+                    <div class="clickable-overlay" onclick="showDetails('${item.symbol}')"></div>
+                    
                     <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
                             onclick="toggleFavorite('${item.symbol}', event)">
                         ${isFavorite ? '⭐' : '☆'}
@@ -1169,8 +1233,8 @@
                     
                     <div class="chart-container">
                         <div class="chart-period">
-                            <span style="color: #666;">${chartData.length > 100 ? '1M' : '1W'} Chart</span>
-                            <span style="margin-left: auto; color: #666; font-size: 0.7rem;">
+                            <span style="color: #888; font-weight: 500;">${chartData.length > 100 ? '1M' : '1W'} Trend</span>
+                            <span style="color: #666; font-size: 0.75rem;">
                                 ${chartData.length < 10 ? '🔄 Building...' : chartData.length + ' points'}
                             </span>
                         </div>
@@ -1189,18 +1253,34 @@
         // Create mini chart for grid items
         function createMiniChart(symbol) {
             const canvas = document.getElementById(`miniChart-${symbol}`);
-            if (!canvas) return;
+            if (!canvas) {
+                console.warn(`Canvas not found for ${symbol}`);
+                return;
+            }
 
             const ctx = canvas.getContext('2d');
-            const data = getHistoricalData(symbol, '24h');
+            const data = getHistoricalData(symbol, '1W'); // Use weekly data for better visualization
             
             if (miniCharts[symbol]) {
                 miniCharts[symbol].destroy();
             }
 
+            // Show loading state if not enough data
+            const chartContainer = canvas.parentElement;
             if (data.length < 2) {
-                return; // Not enough data for mini chart
+                chartContainer.innerHTML = `
+                    <div class="chart-loading">
+                        <div class="chart-loading-spinner"></div>
+                        <span>Building chart...</span>
+                    </div>
+                `;
+                return;
             }
+
+            // Ensure canvas is visible and properly sized
+            canvas.style.display = 'block';
+            canvas.width = chartContainer.offsetWidth || 280;
+            canvas.height = 80;
 
             const chartData = data.map(point => ({
                 x: new Date(point.timestamp),
@@ -1211,67 +1291,110 @@
             const lastPrice = data[data.length - 1].price;
             const isPositive = lastPrice >= firstPrice;
 
-            miniCharts[symbol] = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        data: chartData,
-                        borderColor: isPositive ? '#00ff88' : '#ff4d4d',
-                        borderWidth: 1.5,
-                        fill: true,
-                        backgroundColor: isPositive 
-                            ? 'rgba(0, 255, 136, 0.1)' 
-                            : 'rgba(255, 77, 77, 0.1)',
-                        tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
+            try {
+                miniCharts[symbol] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            data: chartData,
+                            borderColor: isPositive ? '#00ff88' : '#ff4d4d',
+                            borderWidth: 2,
+                            fill: true,
+                            backgroundColor: isPositive 
+                                ? 'rgba(0, 255, 136, 0.15)' 
+                                : 'rgba(255, 77, 77, 0.15)',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 3,
+                            pointBackgroundColor: isPositive ? '#00ff88' : '#ff4d4d'
+                        }]
                     },
-                    scales: {
-                        x: { display: false },
-                        y: { display: false }
-                    },
-                    elements: {
-                        point: { radius: 0 }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { 
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: isPositive ? '#00ff88' : '#ff4d4d',
+                                borderWidth: 1,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return new Date(context[0].parsed.x).toLocaleDateString();
+                                    },
+                                    label: function(context) {
+                                        return `${formatPrice(context.parsed.y)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: {
+                            point: { radius: 0 }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'crosshair' : 'pointer';
+                        }
                     }
-                }
-            });
+                });
+            } catch (error) {
+                console.error(`Error creating chart for ${symbol}:`, error);
+                chartContainer.innerHTML = `
+                    <div class="no-chart-data">
+                        <div class="no-chart-data-icon">📊</div>
+                        <span>Chart error</span>
+                    </div>
+                `;
+            }
         }
 
         // Create modal chart with Chart.js
         function createModalChart(symbol, period = '1M') {
             const canvas = document.getElementById('modalChartCanvas');
-            if (!canvas) return;
+            if (!canvas) {
+                console.error('Modal chart canvas not found');
+                return;
+            }
 
             const ctx = canvas.getContext('2d');
             const data = getHistoricalData(symbol, period);
 
             if (modalChart) {
                 modalChart.destroy();
+                modalChart = null;
             }
 
             if (data.length < 2) {
                 const chartContainer = document.getElementById('modalChart');
                 chartContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; flex-direction: column;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
-                        <div>Not enough historical data for ${period}</div>
-                        <div style="font-size: 0.9rem; margin-top: 10px;">Data collection in progress...</div>
+                    <div class="no-chart-data" style="height: 400px;">
+                        <div class="no-chart-data-icon">📊</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 10px;">Not enough historical data for ${period}</div>
+                        <div style="font-size: 0.9rem; color: #888;">Data collection in progress...</div>
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: #666;">
+                            Current data points: ${data.length} • Need at least 2 points
+                        </div>
                     </div>
                 `;
                 return;
             }
+
+            // Ensure canvas is properly sized
+            canvas.width = canvas.offsetWidth || 800;
+            canvas.height = 400;
 
             const chartData = data.map(point => ({
                 x: new Date(point.timestamp),
@@ -1467,7 +1590,7 @@
 
                 <div class="chart-large" id="modalChart">
                     <div class="chart-container">
-                        <canvas id="modalChartCanvas"></canvas>
+                        <canvas id="modalChartCanvas" style="width: 100%; height: 100%;"></canvas>
                     </div>
                 </div>
 
@@ -1654,13 +1777,19 @@
             const btn = event.target;
             btn.style.transform = 'rotate(360deg)';
             btn.disabled = true;
+            btn.textContent = '🔄 Updating...';
             
-            updateAllPrices();
+            updateAllPrices().then(() => {
+                // Force refresh all charts after price update
+                refreshAllCharts();
+                render();
+            });
             
             setTimeout(() => {
                 btn.style.transform = 'rotate(0deg)';
                 btn.disabled = false;
-            }, 500);
+                btn.textContent = '🔄 Update Prices';
+            }, 1000);
         }
 
         // Filter items
@@ -1732,14 +1861,17 @@
         function render() {
             renderCategories();
             updateStats();
-            // Re-setup chart interactivity after render
-            setTimeout(setupChartInteractivity, 100);
-            // Create mini charts after render
-            setTimeout(() => {
+            
+            // Create mini charts after DOM is updated
+            requestAnimationFrame(() => {
                 Object.values(categories).flat().forEach(item => {
-                    createMiniChart(item.symbol);
+                    // Add small delay to ensure DOM elements exist
+                    setTimeout(() => createMiniChart(item.symbol), 50);
                 });
-            }, 200);
+                
+                // Re-setup chart interactivity after charts are created
+                setTimeout(setupChartInteractivity, 300);
+            });
         }
 
         // Initialize
@@ -1752,125 +1884,33 @@
 
             // Initialize data
             initializeData();
+            
+            // Initial render and price update
             render();
             updateAllPrices();
 
             // Start auto-update
             updateInterval = setInterval(updateAllPrices, UPDATE_INTERVAL);
-
-            // Setup chart interactivity after initial render
-            setTimeout(setupChartInteractivity, 100);
             
             // Start background updates
             setTimeout(startBackgroundUpdates, 2000);
+            
+            // Add click event delegation for better performance
+            document.addEventListener('click', (e) => {
+                const card = e.target.closest('.item-card');
+                if (card && e.target.closest('.clickable-overlay')) {
+                    const symbol = card.dataset.symbol;
+                    if (symbol) {
+                        showDetails(symbol);
+                    }
+                }
+            });
         });
 
-        // Setup chart hover interactivity
+        // Setup chart hover interactivity - simplified for Chart.js
         function setupChartInteractivity() {
-            // Event delegation for all charts
-            document.addEventListener('mousemove', handleChartHover);
-            document.addEventListener('mouseleave', handleChartLeave);
-        }
-
-        // Handle chart hover
-        function handleChartHover(e) {
-            const hoverArea = e.target.closest('.hover-area');
-            if (!hoverArea) return;
-
-            const svg = hoverArea.closest('svg');
-            if (!svg) return;
-
-            const chartId = svg.id;
-            const symbol = svg.dataset.symbol;
-            const price = parseFloat(hoverArea.dataset.price);
-            const timestamp = parseInt(hoverArea.dataset.timestamp);
-            const x = parseFloat(hoverArea.dataset.x);
-            const y = parseFloat(hoverArea.dataset.y);
-
-            // Update hover line and dot
-            const hoverLine = svg.querySelector(`#hover-line-${chartId}`);
-            const hoverDot = svg.querySelector(`#hover-dot-${chartId}`);
-            
-            if (hoverLine) {
-                hoverLine.style.display = 'block';
-                hoverLine.setAttribute('x1', x);
-                hoverLine.setAttribute('x2', x);
-            }
-
-            if (hoverDot) {
-                hoverDot.classList.add('visible');
-                hoverDot.setAttribute('cx', x);
-                hoverDot.setAttribute('cy', y);
-            }
-
-            // Show tooltip
-            showTooltip(e, chartId, price, timestamp, symbol);
-        }
-
-        // Handle mouse leave
-        function handleChartLeave(e) {
-            if (!e.target.closest('.chart-svg')) return;
-
-            // Hide all tooltips and hover elements
-            document.querySelectorAll('.chart-tooltip').forEach(tooltip => {
-                tooltip.classList.remove('visible');
-            });
-
-            document.querySelectorAll('.chart-hover-line').forEach(line => {
-                line.style.display = 'none';
-            });
-
-            document.querySelectorAll('.chart-hover-dot').forEach(dot => {
-                dot.classList.remove('visible');
-            });
-        }
-
-        // Show tooltip
-        function showTooltip(e, chartId, price, timestamp, symbol) {
-            const tooltip = document.getElementById(`tooltip-${chartId}`);
-            if (!tooltip) return;
-
-            const date = new Date(timestamp);
-            const item = Object.values(categories).flat().find(i => i.symbol === symbol);
-            
-            // Calculate change from start of period
-            const data = getHistoricalData(symbol, selectedPeriod);
-            let changeText = '';
-            if (data && data.length > 0) {
-                const firstPrice = data[0].price;
-                const change = ((price - firstPrice) / firstPrice) * 100;
-                changeText = `<div class="chart-tooltip-change ${change >= 0 ? 'positive' : 'negative'}">
-                    ${change >= 0 ? '+' : ''}${change.toFixed(2)}% from period start
-                </div>`;
-            }
-
-            tooltip.innerHTML = `
-                <div class="chart-tooltip-price">${formatPrice(price)}</div>
-                <div class="chart-tooltip-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
-                ${changeText}
-            `;
-
-            // Position tooltip
-            const rect = e.target.closest('.chart-mini, .chart-large').getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Adjust position to avoid edge overflow
-            const tooltipRect = tooltip.getBoundingClientRect();
-            let left = x + 10;
-            let top = y - tooltipRect.height - 10;
-
-            if (left + tooltipRect.width > rect.width) {
-                left = x - tooltipRect.width - 10;
-            }
-
-            if (top < 0) {
-                top = y + 20;
-            }
-
-            tooltip.style.left = `${left}px`;
-            tooltip.style.top = `${top}px`;
-            tooltip.classList.add('visible');
+            // Chart.js handles interactivity natively, no additional setup needed
+            console.log('Chart interactivity setup completed');
         }
 
         // Background update system
@@ -1978,6 +2018,20 @@
             }
         }
 
+        // Force refresh all charts
+        function refreshAllCharts() {
+            Object.values(categories).flat().forEach(item => {
+                // Destroy existing chart if it exists
+                if (miniCharts[item.symbol]) {
+                    miniCharts[item.symbol].destroy();
+                    delete miniCharts[item.symbol];
+                }
+                
+                // Recreate chart
+                setTimeout(() => createMiniChart(item.symbol), 100);
+            });
+        }
+
         // Enhanced update all prices for background compatibility - ASYNC VERSION  
         async function updateAllPrices() {
             // Update all items in parallel for efficiency
@@ -2010,11 +2064,32 @@
             if (isPageVisible) {
                 document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
                 updateStats();
-                render();
                 
-                // Update mini charts with new data
+                // Update existing elements without full re-render
                 Object.values(categories).flat().forEach(item => {
-                    setTimeout(() => createMiniChart(item.symbol), 100);
+                    const priceElement = document.getElementById(`price-${item.symbol}`);
+                    const changeElement = document.getElementById(`change-${item.symbol}`);
+                    const highElement = document.getElementById(`high-${item.symbol}`);
+                    const lowElement = document.getElementById(`low-${item.symbol}`);
+                    
+                    if (priceElement) {
+                        const price = currentPrices[item.symbol];
+                        const dataWeek = getHistoricalData(item.symbol, '1W');
+                        const stats = calculateStats(dataWeek);
+                        
+                        priceElement.textContent = `${formatPrice(price)}${item.unit}`;
+                        
+                        if (changeElement) {
+                            changeElement.textContent = `${stats.changePercent >= 0 ? '▲' : '▼'} ${Math.abs(stats.changePercent).toFixed(2)}%`;
+                            changeElement.className = `price-change ${stats.changePercent >= 0 ? 'positive' : 'negative'}`;
+                        }
+                        
+                        if (highElement) highElement.textContent = formatPrice(stats.high || price);
+                        if (lowElement) lowElement.textContent = formatPrice(stats.low || price);
+                        
+                        // Update mini chart
+                        setTimeout(() => createMiniChart(item.symbol), 50);
+                    }
                 });
             }
             
@@ -2080,6 +2155,24 @@
             }
         });
 
+        // Debug function for troubleshooting
+        function debugCharts() {
+            console.log('=== Chart Debug Info ===');
+            console.log('Mini charts created:', Object.keys(miniCharts).length);
+            console.log('Canvas elements found:', document.querySelectorAll('canvas').length);
+            console.log('Chart containers found:', document.querySelectorAll('.chart-mini').length);
+            
+            Object.values(categories).flat().forEach(item => {
+                const canvas = document.getElementById(`miniChart-${item.symbol}`);
+                const container = document.getElementById(`chart-${item.symbol}`);
+                console.log(`${item.symbol}: canvas=${!!canvas}, container=${!!container}, chart=${!!miniCharts[item.symbol]}`);
+            });
+        }
+
+        // Add debug to window for console access
+        window.debugCharts = debugCharts;
+        window.refreshAllCharts = refreshAllCharts;
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -2089,7 +2182,40 @@
                 e.preventDefault();
                 manualRefresh();
             }
+            // Debug shortcut
+            if (e.key === 'd' && e.ctrlKey && e.shiftKey) {
+                e.preventDefault();
+                debugCharts();
+            }
         });
+        
+        // Add test script in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            // Simple UI test script for the price tracker
+            console.log('🧪 Starting UI tests...');
+
+            // Test after initial load
+            setTimeout(() => {
+                console.log('✅ Page loaded');
+                
+                // Test cards
+                const cards = document.querySelectorAll('.item-card');
+                console.log(`📊 Found ${cards.length} cards`);
+                
+                // Test charts
+                const canvases = document.querySelectorAll('canvas');
+                console.log(`📈 Found ${canvases.length} canvas elements`);
+                
+                // Test overlays
+                const overlays = document.querySelectorAll('.clickable-overlay');
+                console.log(`🖱️ Found ${overlays.length} clickable overlays`);
+                
+                // Test chart creation
+                console.log(`📊 Mini charts created: ${Object.keys(miniCharts).length}`);
+                
+                console.log('🏁 UI tests completed');
+            }, 3000);
+        }
     </script>
 </body>
 </html>
