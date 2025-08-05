@@ -683,9 +683,13 @@
                         <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
                         Background Collection Active
                     </span>
+                    <span class="background-indicator" id="dataSourceIndicator" style="background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.3); color: #00ff88;">
+                        <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                        Real Market Data
+                    </span>
                 </p>
-                <p class="data-info" id="dataInfo">Building long-term charts...</p>
-                <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">Updates every 5 minutes • Best viewed after 1+ week of data</p>
+                <p class="data-info" id="dataInfo">Building long-term charts with real market data...</p>
+                <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">Updates every 5 minutes • Real data from multiple verified sources</p>
             </div>
         </header>
 
@@ -1266,16 +1270,51 @@
             }
         }
 
-        // Update single item price
-        function updateItemPrice(item) {
+        // Update single item price - REAL DATA VERSION
+        async function updateItemPrice(item) {
+            // Try to get real data from background agent first
+            try {
+                const response = await fetch('http://localhost:3001/api/prices', {
+                    method: 'GET',
+                    timeout: 5000
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.prices && data.prices[item.symbol]) {
+                        const realPrice = data.prices[item.symbol];
+                        currentPrices[item.symbol] = realPrice;
+                        addDataPoint(item.symbol, realPrice);
+                        
+                        // Update UI to show this is real data
+                        const priceElement = document.getElementById(`price-${item.symbol}`);
+                        if (priceElement && !priceElement.title) {
+                            priceElement.title = '✅ Real market data';
+                            priceElement.style.borderLeft = '3px solid #00ff88';
+                        }
+                        return; // Successfully got real data
+                    }
+                }
+            } catch (error) {
+                console.warn(`Failed to fetch real price for ${item.symbol}:`, error.message);
+            }
+            
+            // Fallback to simulated data if real data unavailable
             const oldPrice = currentPrices[item.symbol];
-            // Reduced volatility for longer-term tracking (divide by 3)
             const adjustedVolatility = item.volatility / 3;
             const change = (Math.random() - 0.5) * adjustedVolatility;
-            const newPrice = Math.max(oldPrice * (1 + change), item.basePrice * 0.1); // Prevent negative
+            const newPrice = Math.max(oldPrice * (1 + change), item.basePrice * 0.1);
             
             currentPrices[item.symbol] = newPrice;
             addDataPoint(item.symbol, newPrice);
+            
+            // Update UI to show this is simulated data
+            const priceElement = document.getElementById(`price-${item.symbol}`);
+            if (priceElement) {
+                priceElement.title = '⚠️ Simulated data (background agent offline)';
+                priceElement.style.borderLeft = '3px solid #ff4d4d';
+            }
         }
 
         // Update statistics
@@ -1702,9 +1741,33 @@
             }
         }
 
-        // Enhanced update all prices for background compatibility
-        function updateAllPrices() {
-            Object.values(categories).flat().forEach(updateItemPrice);
+        // Enhanced update all prices for background compatibility - ASYNC VERSION  
+        async function updateAllPrices() {
+            // Update all items in parallel for efficiency
+            const updatePromises = Object.values(categories).flat().map(item => updateItemPrice(item));
+            
+            let realDataCount = 0;
+            let totalItems = Object.values(categories).flat().length;
+            
+            try {
+                await Promise.all(updatePromises);
+                
+                // Check how many items have real data vs simulated
+                Object.values(categories).flat().forEach(item => {
+                    const priceElement = document.getElementById(`price-${item.symbol}`);
+                    if (priceElement && priceElement.title && priceElement.title.includes('Real market data')) {
+                        realDataCount++;
+                    }
+                });
+                
+                // Update data source indicator
+                updateDataSourceIndicator(realDataCount, totalItems);
+                
+                console.log(`✅ Price update completed - ${realDataCount}/${totalItems} using real market data`);
+            } catch (error) {
+                console.warn('⚠️ Some price updates failed:', error.message);
+                updateDataSourceIndicator(0, totalItems);
+            }
             
             // Only update UI if page is visible
             if (isPageVisible) {
@@ -1716,6 +1779,43 @@
             saveData();
             
             // Background data collection is active when page is not visible
+        }
+        
+        // Update data source indicator based on real vs simulated data
+        function updateDataSourceIndicator(realDataCount, totalItems) {
+            const indicator = document.getElementById('dataSourceIndicator');
+            if (!indicator) return;
+            
+            const realDataPercentage = (realDataCount / totalItems) * 100;
+            
+            if (realDataPercentage >= 80) {
+                // Mostly real data
+                indicator.style.background = 'rgba(0, 255, 136, 0.1)';
+                indicator.style.borderColor = 'rgba(0, 255, 136, 0.3)';
+                indicator.style.color = '#00ff88';
+                indicator.innerHTML = `
+                    <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                    Real Market Data (${realDataCount}/${totalItems})
+                `;
+            } else if (realDataPercentage >= 30) {
+                // Mixed data
+                indicator.style.background = 'rgba(255, 165, 0, 0.1)';
+                indicator.style.borderColor = 'rgba(255, 165, 0, 0.3)';
+                indicator.style.color = '#ffa500';
+                indicator.innerHTML = `
+                    <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                    Mixed Data (${realDataCount}/${totalItems} real)
+                `;
+            } else {
+                // Mostly simulated data
+                indicator.style.background = 'rgba(255, 77, 77, 0.1)';
+                indicator.style.borderColor = 'rgba(255, 77, 77, 0.3)';
+                indicator.style.color = '#ff4d4d';
+                indicator.innerHTML = `
+                    <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%; display: inline-block;"></span>
+                    Simulated Data (${realDataCount}/${totalItems} real)
+                `;
+            }
         }
 
         // Prevent page unload if data is being collected

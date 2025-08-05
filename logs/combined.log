@@ -1,0 +1,52 @@
+{"level":"info","message":"Scheduled updates started","timestamp":"2025-08-05T03:49:34.707Z"}
+{"level":"info","message":"Universal Price Agent running on port 3001","timestamp":"2025-08-05T03:49:34.709Z"}
+{"level":"info","message":"Starting price update cycle","timestamp":"2025-08-05T03:49:47.259Z"}
+{"level":"warn","message":"Binance failed for BTC:","timestamp":"2025-08-05T03:49:47.399Z"}
+{"level":"warn","message":"CoinMarketCap failed for BTC:","timestamp":"2025-08-05T03:49:47.561Z"}
+{"level":"warn","message":"Binance failed for ETH:","timestamp":"2025-08-05T03:49:47.602Z"}
+{"level":"warn","message":"MetalsAPI failed for XAU:","timestamp":"2025-08-05T03:49:47.646Z"}
+{"level":"warn","message":"FMP failed for SPY:","timestamp":"2025-08-05T03:49:47.795Z"}
+{"level":"warn","message":"APMEX scraping failed for XAU:","timestamp":"2025-08-05T03:49:47.864Z"}
+{"level":"warn","message":"FMP API failed for XAU:","timestamp":"2025-08-05T03:49:47.937Z"}
+{"level":"warn","message":"MetalsAPI failed for XAG:","timestamp":"2025-08-05T03:49:48.066Z"}
+{"level":"warn","message":"CoinMarketCap failed for ETH:","timestamp":"2025-08-05T03:49:48.105Z"}
+{"level":"warn","message":"APMEX scraping failed for XAG:","timestamp":"2025-08-05T03:49:48.119Z"}
+{"level":"warn","message":"Binance failed for SOL:","timestamp":"2025-08-05T03:49:48.147Z"}
+{"level":"warn","message":"FMP API failed for XAG:","timestamp":"2025-08-05T03:49:48.491Z"}
+{"level":"warn","message":"CoinMarketCap failed for SOL:","timestamp":"2025-08-05T03:49:48.493Z"}
+{"level":"warn","message":"Binance failed for DOGE:","timestamp":"2025-08-05T03:49:48.678Z"}
+{"level":"warn","message":"MetalsAPI failed for XPT:","timestamp":"2025-08-05T03:49:48.679Z"}
+{"level":"warn","message":"MarketWatch scraping failed for SPY:","timestamp":"2025-08-05T03:49:48.729Z"}
+{"level":"warn","message":"APMEX scraping failed for XPT:","timestamp":"2025-08-05T03:49:48.733Z"}
+{"level":"warn","message":"FMP API failed for XPT:","timestamp":"2025-08-05T03:49:48.805Z"}
+{"level":"warn","message":"CoinMarketCap failed for DOGE:","timestamp":"2025-08-05T03:49:48.885Z"}
+{"level":"warn","message":"MetalsAPI failed for XPD:","timestamp":"2025-08-05T03:49:48.932Z"}
+{"level":"warn","message":"APMEX scraping failed for XPD:","timestamp":"2025-08-05T03:49:48.978Z"}
+{"level":"warn","message":"FMP API failed for XPD:","timestamp":"2025-08-05T03:49:49.049Z"}
+{"level":"warn","message":"Failed to update XAU: No sources available","timestamp":"2025-08-05T03:49:49.049Z"}
+{"level":"warn","message":"Failed to update XAG: No sources available","timestamp":"2025-08-05T03:49:49.049Z"}
+{"level":"warn","message":"Failed to update XPT: No sources available","timestamp":"2025-08-05T03:49:49.049Z"}
+{"level":"warn","message":"Failed to update XPD: No sources available","timestamp":"2025-08-05T03:49:49.049Z"}
+{"level":"warn","message":"Failed to update ROLEX-SUB: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update ROLEX-DAY: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update AP-RO: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update PATEK-NAU: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update CHAR-PSA10: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update MTG-LOTUS: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update AC1: No valid sources available","timestamp":"2025-08-05T03:49:49.557Z"}
+{"level":"warn","message":"Failed to update HOUSE-US: No valid sources available","timestamp":"2025-08-05T03:49:50.888Z"}
+{"level":"warn","message":"Failed to update HOUSE-CA: No valid sources available","timestamp":"2025-08-05T03:49:50.888Z"}
+{"level":"warn","message":"Failed to update NYC-SQFT: No valid sources available","timestamp":"2025-08-05T03:49:50.888Z"}
+{"level":"warn","message":"USDA eggs price failed:","timestamp":"2025-08-05T03:49:57.296Z"}
+{"level":"warn","message":"IEX Cloud failed for SPY:","timestamp":"2025-08-05T03:49:58.730Z"}
+{"level":"warn","message":"FMP failed for QQQ:","timestamp":"2025-08-05T03:49:59.068Z"}
+{"level":"warn","message":"Failed to update EGGS: No valid sources available","timestamp":"2025-08-05T03:49:59.822Z"}
+{"level":"warn","message":"Failed to update MILK: No valid sources available","timestamp":"2025-08-05T03:49:59.823Z"}
+{"level":"warn","message":"Failed to update GAS: No valid sources available","timestamp":"2025-08-05T03:49:59.823Z"}
+{"level":"warn","message":"Failed to update COFFEE: No valid sources available","timestamp":"2025-08-05T03:49:59.823Z"}
+{"level":"warn","message":"MarketWatch scraping failed for QQQ:","timestamp":"2025-08-05T03:49:59.858Z"}
+{"level":"warn","message":"IEX Cloud failed for QQQ:","timestamp":"2025-08-05T03:50:09.862Z"}
+{"level":"warn","message":"FMP failed for DIA:","timestamp":"2025-08-05T03:50:10.235Z"}
+{"level":"warn","message":"MarketWatch scraping failed for DIA:","timestamp":"2025-08-05T03:50:12.571Z"}
+{"level":"warn","message":"IEX Cloud failed for DIA:","timestamp":"2025-08-05T03:50:22.573Z"}
+{"level":"info","message":"Update cycle completed: 7 success, 18 errors in 35314ms","timestamp":"2025-08-05T03:50:22.573Z"}
